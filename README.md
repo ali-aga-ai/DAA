@@ -20,3 +20,5 @@ Contributions:
 -Algorithm reports - Vivan Jain and Srivant Vishnuvajjala    
 Dataset preparation:
 https://drive.google.com/drive/folders/1EZ697fzgMoccm80P6U4T23cTcC14iI8b
+
+Project Report is in the Repo
