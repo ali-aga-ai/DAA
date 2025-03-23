@@ -25,9 +25,9 @@ const Dashboard = () => {
   };
   
   const executionTimeData = [
-    { name: "Wiki", 'ELS': 7.82, 'Tomita ': 3.46, 'CHIBA': 2753 },
+    { name: "Wiki", 'ELS': 7.82, 'Tomita': 3.46, 'CHIBA': 2753 },
     { name: "Email-enron", 'ELS': 9.00, 'Tomita': 7.63, 'CHIBA': 4082 },
-    { name: "Skitter", 'ELS': 1243.2, 'Tomita': 57618, 'CHIBA': 91182 },
+    { name: "Skitter", 'ELS': 1243.2, 'Tomita': 57618.0, 'CHIBA': 91182 },
   ];
   
   // Updated with complete data
@@ -370,6 +370,7 @@ const Dashboard = () => {
                     'Tomita': dataset['Tomita'],
                     'CHIBA': dataset['CHIBA']
                   };
+                  console.log(times);
                   const fastestAlgo = Object.entries(times).reduce((a, b) => a[1] < b[1] ? a : b);
                   const slowestTime = Math.max(...Object.values(times));
                   const improvement = ((slowestTime - fastestAlgo[1]) / slowestTime * 100).toFixed(1);
