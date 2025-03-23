@@ -11,13 +11,7 @@ const Dashboard = () => {
     { id: 'Email-enron', name: 'Email-enron' },
     { id: 'Skitter', name: 'Skitter' },
   ];
-  
-  const algorithms = [
-    { id: 'algo1', name: 'ELS' },
-    { id: 'algo2', name: 'Tomita' },
-    { id: 'algo3', name: 'CHIBA' },
-  ];
-  
+
   const cliqueStats = {
     "Wiki": { largestClique: 17, totalMaximalCliques: 459002 },
     "Email-enron": { largestClique: 20, totalMaximalCliques: 226859 },
@@ -370,7 +364,6 @@ const Dashboard = () => {
                     'Tomita': dataset['Tomita'],
                     'CHIBA': dataset['CHIBA']
                   };
-                  console.log(times);
                   const fastestAlgo = Object.entries(times).reduce((a, b) => a[1] < b[1] ? a : b);
                   const slowestTime = Math.max(...Object.values(times));
                   const improvement = ((slowestTime - fastestAlgo[1]) / slowestTime * 100).toFixed(1);
