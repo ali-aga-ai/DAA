@@ -25,9 +25,9 @@ const Dashboard = () => {
   };
   
   const executionTimeData = [
-    { name: "Wiki", 'ELS': 7.82, 'Tomita ': 3.46, 'CHIBA': 1.87 },
-    { name: "Email-enron", 'ELS': 9.00, 'Tomita': 7.63, 'CHIBA': 4.98 },
-    { name: "Skitter", 'ELS': 1632.69, 'Tomita': 0.98, 'CHIBA': 0.76 },
+    { name: "Wiki", 'ELS': 7.82, 'Tomita ': 3.46, 'CHIBA': 2753 },
+    { name: "Email-enron", 'ELS': 9.00, 'Tomita': 7.63, 'CHIBA': 4082 },
+    { name: "Skitter", 'ELS': 1243.2, 'Tomita': 57618, 'CHIBA': 91182 },
   ];
   
   // Updated with complete data
