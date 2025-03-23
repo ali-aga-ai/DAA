@@ -85,14 +85,16 @@ void expand(const set<int>& subg,
 int main()
 {
     //string filen = "C:\\Users\\rishi\\Studies\\CS\\daa_tomita\\Wiki-Vote.txt";
-    string filen = "C:\\Users\\rishi\\Studies\\CS\\daa_tomita\\Email-Enron.txt";
-    //string filen = "C:\\Users\\rishi\\Studies\\CS\\daa_tomita\\as-skitter.txt";
+    //string filen = "C:\\Users\\rishi\\Studies\\CS\\daa_tomita\\Email-Enron.txt";
+    string filen = "C:\\Users\\rishi\\Studies\\CS\\daa_tomita\\as-skitter.txt";
     ifstream file(filen);
 
     auto start = chrono::high_resolution_clock::now();
-    for (int i = 0; i < 5; ++i) {
-        string temp;
-        getline(file, temp);
+    string temp;
+    while (getline(file, temp)) {
+        if (temp.empty() || temp[0] != '#') {
+            break;
+        }
     }
 
     vector<pair<int,int>> edges;
