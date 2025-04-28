@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/DAA/static/css/main.40faea38.css",
+    "main.js": "/DAA/static/js/main.f007e670.js",
+    "static/js/453.2102eb04.chunk.js": "/DAA/static/js/453.2102eb04.chunk.js",
+    "index.html": "/DAA/index.html",
+    "main.40faea38.css.map": "/DAA/static/css/main.40faea38.css.map",
+    "main.f007e670.js.map": "/DAA/static/js/main.f007e670.js.map",
+    "453.2102eb04.chunk.js.map": "/DAA/static/js/453.2102eb04.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.40faea38.css",
+    "static/js/main.f007e670.js"
+  ]
+}
