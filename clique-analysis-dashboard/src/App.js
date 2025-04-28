@@ -1,389 +1,348 @@
 import React, { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
-const Dashboard = () => {
-  const [selectedDataset, setSelectedDataset] = useState('all');
-  const [maxCliqueSize, setMaxCliqueSize] = useState(20); // Default to show cliques up to size 20
-  
-  // Hardcoded data
-  const datasets = [
-    { id: 'Wiki', name: 'Wiki' },
-    { id: 'Email-enron', name: 'Email-enron' },
-    { id: 'Skitter', name: 'Skitter' },
-  ];
-
-  const cliqueStats = {
-    "Wiki": { largestClique: 17, totalMaximalCliques: 459002 },
-    "Email-enron": { largestClique: 20, totalMaximalCliques: 226859 },
-    "Skitter": { largestClique: 67, totalMaximalCliques: 37322355 },
-  };
-  
-  const executionTimeData = [
-    { name: "Wiki", 'ELS': 7.82, 'Tomita': 3.46, 'CHIBA': 2753 },
-    { name: "Email-enron", 'ELS': 9.00, 'Tomita': 7.63, 'CHIBA': 4082 },
-    { name: "Skitter", 'ELS': 1243.2, 'Tomita': 57618.0, 'CHIBA': 91182 },
-  ];
-  
-  // Updated with complete data
-  const cliqueSizeDistributionData = {
-    Wiki: [
-      { size: 2, count: 8655 },
-      { size: 3, count: 13718 },
-      { size: 4, count: 27292 },
-      { size: 5, count: 48416 },
-      { size: 6, count: 68872 },
-      { size: 7, count: 83266 },
-      { size: 8, count: 76732 },
-      { size: 9, count: 54456 },
-      { size: 10, count: 35470 },
-      { size: 11, count: 21736 },
-      { size: 12, count: 11640 },
-      { size: 13, count: 5449 },
-      { size: 14, count: 2329 },
-      { size: 15, count: 740 },
-      { size: 16, count: 208 },
-      { size: 17, count: 23 },
-    ],
-    'Email-enron': [
-      { size: 2, count: 14070 },
-      { size: 3, count: 7077 },
-      { size: 4, count: 13319 },
-      { size: 5, count: 18143 },
-      { size: 6, count: 22715 },
-      { size: 7, count: 25896 },
-      { size: 8, count: 24766 },
-      { size: 9, count: 22884 },
-      { size: 10, count: 21393 },
-      { size: 11, count: 17833 },
-      { size: 12, count: 15181 },
-      { size: 13, count: 11487 },
-      { size: 14, count: 7417 },
-      { size: 15, count: 3157 },
-      { size: 16, count: 1178 },
-      { size: 17, count: 286 },
-      { size: 18, count: 41 },
-      { size: 19, count: 10 },
-      { size: 20, count: 6 },
-    ],
-    Skitter: [
-      { size: 2, count: 2319807 },
-      { size: 3, count: 3171609 },
-      { size: 4, count: 1823321 },
-      { size: 5, count: 939336 },
-      { size: 6, count: 684873 },
-      { size: 7, count: 598284 },
-      { size: 8, count: 588889 },
-      { size: 9, count: 608937 },
-      { size: 10, count: 665661 },
-      { size: 11, count: 728098 },
-      { size: 12, count: 798073 },
-      { size: 13, count: 877282 },
-      { size: 14, count: 945194 },
-      { size: 15, count: 980831 },
-      { size: 16, count: 939987 },
-      { size: 17, count: 839330 },
-      { size: 18, count: 729601 },
-      { size: 19, count: 639413 },
-      { size: 20, count: 600192 },
-      { size: 21, count: 611976 },
-      { size: 22, count: 640890 },
-      { size: 23, count: 673924 },
-      { size: 24, count: 706753 },
-      { size: 25, count: 753633 },
-      { size: 26, count: 818353 },
-      { size: 27, count: 892719 },
-      { size: 28, count: 955212 },
-      { size: 29, count: 999860 },
-      { size: 30, count: 1034106 },
-      { size: 31, count: 1055653 },
-      { size: 32, count: 1017560 },
-      { size: 33, count: 946717 },
-      { size: 34, count: 878552 },
-      { size: 35, count: 809485 },
-      { size: 36, count: 744634 },
-      { size: 37, count: 663650 },
-      { size: 38, count: 583922 },
-      { size: 39, count: 520239 },
-      { size: 40, count: 474301 },
-      { size: 41, count: 420796 },
-      { size: 42, count: 367879 },
-      { size: 43, count: 321829 },
-      { size: 44, count: 275995 },
-      { size: 45, count: 222461 },
-      { size: 46, count: 158352 },
-      { size: 47, count: 99522 },
-      { size: 48, count: 62437 },
-      { size: 49, count: 39822 },
-      { size: 50, count: 30011 },
-      { size: 51, count: 25637 },
-      { size: 52, count: 17707 },
-      { size: 53, count: 9514 },
-      { size: 54, count: 3737 },
-      { size: 55, count: 2042 },
-      { size: 56, count: 1080 },
-      { size: 57, count: 546 },
-      { size: 58, count: 449 },
-      { size: 59, count: 447 },
-      { size: 60, count: 405 },
-      { size: 61, count: 283 },
-      { size: 62, count: 242 },
-      { size: 63, count: 146 },
-      { size: 64, count: 84 },
-      { size: 65, count: 49 },
-      { size: 66, count: 22 },
-      { size: 67, count: 4 },
-    ],
-  };
-  
-  const colors = {
-    Wiki: '#8884d8',
-    'Email-enron': '#82ca9d',
-    Skitter: '#ffc658',
-  };
-  
-  // Get filtered data based on selected dataset and max clique size
-  const getFilteredData = () => {
-    if (selectedDataset === 'all') {
-      return {
-        Wiki: cliqueSizeDistributionData.Wiki.filter(entry => entry.size <= maxCliqueSize),
-        'Email-enron': cliqueSizeDistributionData['Email-enron'].filter(entry => entry.size <= maxCliqueSize),
-        Skitter: cliqueSizeDistributionData.Skitter.filter(entry => entry.size <= maxCliqueSize)
-      };
-    } else {
-      return {
-        [selectedDataset]: cliqueSizeDistributionData[selectedDataset].filter(entry => entry.size <= maxCliqueSize)
-      };
+const NetworkDensityVisualizer = () => {
+  // Dataset from the table
+  const data = [
+    {
+      dataset: 'S-DBLP',
+      edge: { total: 6, opt: 22, eds: 22 },
+      triangle: { opt: 55, eds: 55 },
+      fourClique: { opt: 99, eds: 99 },
+      fiveClique: { opt: 132, eds: 132 },
+      sixClique: { opt: 73.5, eds: 66 },
+      twoStar: { opt: 165, eds: 165 }
+    },
+    {
+      dataset: 'Yeast',
+      edge: { total: 3.13, opt: 2.11, eds: 0.467 },
+      triangle: { opt: 0.67, eds: 0.0 },
+      fourClique: { opt: 0.0, eds: 0.0 },
+      fiveClique: { opt: 0.0, eds: 0.0 },
+      sixClique: { opt: 111.3, eds: 18.13 },
+      twoStar: { opt: 20, eds: 19.2 }
+    },
+    {
+      dataset: 'Netscience',
+      edge: { total: 9.50, opt: 57.25, eds: 57.25 },
+      triangle: { opt: 242.3, eds: 242.3 },
+      fourClique: { opt: 775.2, eds: 775.2 },
+      fiveClique: { opt: 1938, eds: 1938 },
+      sixClique: { opt: 171, eds: 171 },
+      twoStar: { opt: 726.8, eds: 726.8 }
+    },
+    {
+      dataset: 'As-733',
+      edge: { total: 8.19, opt: 31.43, eds: 31.35 },
+      triangle: { opt: 68.67, eds: 67.94 },
+      fourClique: { opt: 92.78, eds: 90.23 },
+      fiveClique: { opt: 79.37, eds: 75.13 },
+      sixClique: { opt: 826.3, eds: 153.8 },
+      twoStar: { opt: 3376, eds: 437.7 }
     }
+  ];
+
+  // Prepare data for the pattern comparison
+  const prepareComparisonData = (pattern) => {
+    return data.map(item => ({
+      name: item.dataset,
+      opt: item[pattern].opt,
+      eds: item[pattern].eds,
+      total: item[pattern].total
+    }));
   };
-  
-  const filteredDistributionData = getFilteredData();
-  
-  // Generate summary table data
-  const generateSummaryData = () => {
-    return datasets.map(dataset => {
-      const datasetCliques = cliqueSizeDistributionData[dataset.id];
-      const totalCliques = cliqueStats[dataset.id].totalMaximalCliques;
-      const largestSize = cliqueStats[dataset.id].largestClique;
-      
-      // Find the most common clique size
-      const mostCommonSize = datasetCliques.reduce((max, current) => 
-        current.count > max.count ? current : max, datasetCliques[0]);
-        
-      return {
-        name: dataset.name,
-        totalCliques: totalCliques.toLocaleString(),
-        largestSize,
-        mostCommonSize: `${mostCommonSize.size} (${mostCommonSize.count.toLocaleString()})`,
-        smallCliques: datasetCliques.filter(c => c.size <= 5)
-          .reduce((sum, current) => sum + current.count, 0).toLocaleString(),
-        mediumCliques: datasetCliques.filter(c => c.size > 5 && c.size <= 15)
-          .reduce((sum, current) => sum + current.count, 0).toLocaleString(),
-        largeCliques: datasetCliques.filter(c => c.size > 15)
-          .reduce((sum, current) => sum + current.count, 0).toLocaleString(),
-      };
-    });
+
+  // Prepare data for the radar chart
+  const prepareRadarData = () => {
+    return data.map(item => ({
+      dataset: item.dataset,
+      edge: item.edge.opt || 0,
+      triangle: item.triangle.opt || 0,
+      fourClique: item.fourClique.opt || 0,
+      fiveClique: item.fiveClique.opt || 0,
+      sixClique: item.sixClique.opt || 0,
+      twoStar: item.twoStar.opt || 0
+    }));
   };
-  
-  const summaryData = generateSummaryData();
-  
+
+  // Patterns overview data
+  const patternOverviewData = [
+    { name: 'Edge', S_DBLP: 22, Yeast: 2.11, Netscience: 57.25, As_733: 31.43 },
+    { name: 'Triangle', S_DBLP: 55, Yeast: 0.67, Netscience: 242.3, As_733: 68.67 },
+    { name: 'Four-Clique', S_DBLP: 99, Yeast: 0.0, Netscience: 775.2, As_733: 92.78 },
+    { name: 'Five-Clique', S_DBLP: 132, Yeast: 0.0, Netscience: 1938, As_733: 79.37 },
+    { name: 'Six-Clique', S_DBLP: 73.5, Yeast: 111.3, Netscience: 171, As_733: 826.3 },
+    { name: 'Two-Star', S_DBLP: 165, Yeast: 20, Netscience: 726.8, As_733: 3376 }
+  ];
+
+  // Diamond pattern data
+  const diamondData = [
+    { name: 'S-DBLP', opt: 165, eds: 165 },
+    { name: 'Yeast', opt: 20, eds: 19.2 },
+    { name: 'Netscience', opt: 726.8, eds: 726.8 },
+    { name: 'As-733', opt: 3376, eds: 437.7 }
+  ];
+
+  // State to track the selected pattern for comparison
+  const [selectedPattern, setSelectedPattern] = useState('edge');
+
+  // Chart color scheme
+  const colors = {
+    opt: '#8884d8',
+    eds: '#82ca9d',
+    total: '#ffc658',
+    S_DBLP: '#8884d8',
+    Yeast: '#82ca9d',
+    Netscience: '#ffc658',
+    As_733: '#ff8042'
+  };
+
+  // Domain calculation for charts
+  const calculateDomain = (data, key) => {
+    if (!data) return [0, 100];
+    const values = data.map(item => Math.max(item[key] || 0, item.eds || 0));
+    const maxValue = Math.max(...values);
+    return [0, maxValue * 1.1]; // Add 10% margin
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Clique Analysis Dashboard</h1>
-        
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {datasets.map(dataset => (
-            <div key={dataset.id} className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">{dataset.name} Overview</h2>
-              <div className="flex justify-between">
-                <div className="text-center">
-                  <p className="text-sm text-gray-500">Largest Clique Size</p>
-                  <p className="text-2xl font-bold text-indigo-600">{cliqueStats[dataset.id].largestClique}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm text-gray-500">Total Maximal Cliques</p>
-                  <p className="text-2xl font-bold text-indigo-600">
-                    {cliqueStats[dataset.id].totalMaximalCliques.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+    <div className="flex flex-col p-4 gap-8">
+      <h1 className="text-2xl font-bold text-center">
+        Network Pattern Density Analysis
+      </h1>
+      
+      <div className="bg-gray-50 p-4 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-4">Pattern-Density Overview</h2>
+        <div className="h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={patternOverviewData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip formatter={(value) => value.toFixed(2)} />
+              <Legend />
+              <Bar dataKey="S_DBLP" name="S-DBLP" fill={colors.S_DBLP} />
+              <Bar dataKey="Yeast" fill={colors.Yeast} />
+              <Bar dataKey="Netscience" fill={colors.Netscience} />
+              <Bar dataKey="As_733" name="As-733" fill={colors.As_733} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-        
-        {/* Execution Time Chart */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Execution Time Comparison (seconds)</h2>
-          <div className="h-80">
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gray-50 p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">Pattern Comparison</h2>
+          <div className="mb-4">
+            <select 
+              className="p-2 border rounded-md w-full"
+              value={selectedPattern}
+              onChange={(e) => setSelectedPattern(e.target.value)}
+            >
+              <option value="edge">Edge</option>
+              <option value="triangle">Triangle</option>
+              <option value="fourClique">4-Clique</option>
+              <option value="fiveClique">5-Clique</option>
+              <option value="sixClique">6-Clique</option>
+              <option value="twoStar">2-Star</option>
+            </select>
+          </div>
+          <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={executionTimeData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                layout="vertical"
+                data={prepareComparisonData(selectedPattern)}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="name" type="category" />
-                <Tooltip formatter={(value) => `${value.toFixed(2)} seconds`} />
+                <XAxis dataKey="name" />
+                <YAxis domain={calculateDomain(prepareComparisonData(selectedPattern), 'opt')} />
+                <Tooltip formatter={(value) => value.toFixed(2)} />
                 <Legend />
-                <Bar dataKey="ELS" fill="#8884d8" />
-                <Bar dataKey="Tomita" fill="#82ca9d" />
-                <Bar dataKey="CHIBA" fill="#ffc658" />
+                <Bar dataKey="opt" name="ρ-opt" fill={colors.opt} />
+                <Bar dataKey="eds" name="ρ(EDS,Ψ)" fill={colors.eds} />
+                {selectedPattern === 'edge' && <Bar dataKey="total" name="ρ-total" fill={colors.total} />}
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-4 text-sm text-gray-500">
-           
+        </div>
+        
+        <div className="bg-gray-50 p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">Diamond Pattern Comparison</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={diamondData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis domain={calculateDomain(diamondData, 'opt')} />
+                <Tooltip formatter={(value) => value.toFixed(2)} />
+                <Legend />
+                <Bar dataKey="opt" name="ρ-opt" fill={colors.opt} />
+                <Bar dataKey="eds" name="ρ(EDS,Ψ)" fill={colors.eds} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
         
-        {/* Clique Size Distribution */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-            <h2 className="text-xl font-semibold">Clique Size Distribution</h2>
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setSelectedDataset('all')}
-                  className={`px-3 py-1 rounded text-sm ${selectedDataset === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                  All Datasets
-                </button>
-                {datasets.map(dataset => (
-                  <button
-                    key={dataset.id}
-                    onClick={() => setSelectedDataset(dataset.id)}
-                    className={`px-3 py-1 rounded text-sm ${selectedDataset === dataset.id ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                  >
-                    {dataset.name}
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700">Max Size:</span>
-                <select 
-                  value={maxCliqueSize}
-                  onChange={(e) => setMaxCliqueSize(parseInt(e.target.value))}
-                  className="px-2 py-1 border rounded text-sm bg-white"
-                >
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                  <option value="67">All (up to 67)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {selectedDataset === 'all' ? (
-              Object.entries(filteredDistributionData).map(([datasetId, data]) => (
-                <div key={datasetId} className="h-64">
-                  <h3 className="text-center text-gray-700 font-medium mb-2">
-                    {datasetId}
-                  </h3>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="size" label={{ value: 'Clique Size', position: 'insideBottom', offset: -5 }} />
-                      <YAxis label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
-                      <Tooltip formatter={(value) => value.toLocaleString()} />
-                      <Bar dataKey="count" fill={colors[datasetId]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-3 h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={filteredDistributionData[selectedDataset]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="size" label={{ value: 'Clique Size', position: 'insideBottom', offset: -5 }} />
-                    <YAxis label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip formatter={(value) => value.toLocaleString()} />
-                    <Bar dataKey="count" fill={colors[selectedDataset]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
+        <div className="bg-gray-50 p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">Dataset Radar Comparison</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart outerRadius={90} data={prepareRadarData()}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="dataset" />
+                <PolarRadiusAxis angle={30} domain={[0, 500]} />
+                <Radar name="Edge" dataKey="edge" stroke={colors.S_DBLP} fill={colors.S_DBLP} fillOpacity={0.6} />
+                <Radar name="Triangle" dataKey="triangle" stroke={colors.Yeast} fill={colors.Yeast} fillOpacity={0.6} />
+                <Radar name="4-Clique" dataKey="fourClique" stroke={colors.Netscience} fill={colors.Netscience} fillOpacity={0.6} />
+                <Radar name="Two-Star" dataKey="twoStar" stroke={colors.As_733} fill={colors.As_733} fillOpacity={0.6} />
+                <Tooltip />
+                <Legend />
+              </RadarChart>
+            </ResponsiveContainer>
           </div>
         </div>
         
-        {/* Clique Size Distribution Summary */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Clique Distribution Summary</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dataset</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Cliques</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Largest Size</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Most Common Size</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Small Cliques (≤5)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medium Cliques (6-15)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Large Cliques (15)</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {summaryData.map((dataset) => (
-                  <tr key={dataset.name}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{dataset.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.totalCliques}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.largestSize}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.mostCommonSize}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.smallCliques}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.mediumCliques}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{dataset.largeCliques}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="bg-gray-50 p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">Edge vs Triangle Relationship</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={data}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="dataset" />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
+                <Tooltip />
+                <Legend />
+                <Line yAxisId="left" type="monotone" dataKey="edge.opt" name="Edge ρ-opt" stroke={colors.opt} activeDot={{ r: 8 }} />
+                <Line yAxisId="right" type="monotone" dataKey="triangle.opt" name="Triangle ρ-opt" stroke={colors.eds} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
-        
-        {/* Algorithm Performance Summary */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Algorithm Performance Summary</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dataset</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fastest Algorithm</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time (s)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Improvement Over Slowest</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {executionTimeData.map((dataset) => {
-                  const times = {
-                    'ELS': dataset['ELS'],
-                    'Tomita': dataset['Tomita'],
-                    'CHIBA': dataset['CHIBA']
-                  };
-                  const fastestAlgo = Object.entries(times).reduce((a, b) => a[1] < b[1] ? a : b);
-                  const slowestTime = Math.max(...Object.values(times));
-                  const improvement = ((slowestTime - fastestAlgo[1]) / slowestTime * 100).toFixed(1);
-                  
-                  return (
-                    <tr key={dataset.name}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{dataset.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{fastestAlgo[0]}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{fastestAlgo[1].toFixed(2)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{improvement}%</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+      </div>
+      
+      <div className="bg-gray-50 p-4 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-4">Comprehensive Data Table</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Dataset</th>
+                <th className="py-3 px-6 text-center" colSpan="3">Edge</th>
+                <th className="py-3 px-6 text-center" colSpan="2">Triangle</th>
+                <th className="py-3 px-6 text-center" colSpan="2">4-Clique</th>
+                <th className="py-3 px-6 text-center" colSpan="2">5-Clique</th>
+                <th className="py-3 px-6 text-center" colSpan="2">6-Clique</th>
+                <th className="py-3 px-6 text-center" colSpan="2">2-Star</th>
+                <th className="py-3 px-6 text-center" colSpan="2">Diamond</th>
+              </tr>
+              <tr className="bg-gray-100 text-gray-600 text-sm leading-normal">
+                <th className="py-3 px-6 text-left"></th>
+                <th className="py-3 px-2 text-center">ρ-total</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+                <th className="py-3 px-2 text-center">ρ-opt</th>
+                <th className="py-3 px-2 text-center">ρ(EDS,Ψ)</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 text-sm">
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-left">S-DBLP</td>
+                <td className="py-3 px-2 text-center">6</td>
+                <td className="py-3 px-2 text-center">22</td>
+                <td className="py-3 px-2 text-center">22</td>
+                <td className="py-3 px-2 text-center">55</td>
+                <td className="py-3 px-2 text-center">55</td>
+                <td className="py-3 px-2 text-center">99</td>
+                <td className="py-3 px-2 text-center">99</td>
+                <td className="py-3 px-2 text-center">132</td>
+                <td className="py-3 px-2 text-center">132</td>
+                <td className="py-3 px-2 text-center">73.5</td>
+                <td className="py-3 px-2 text-center">66</td>
+                <td className="py-3 px-2 text-center">165</td>
+                <td className="py-3 px-2 text-center">165</td>
+                <td className="py-3 px-2 text-center">165</td>
+                <td className="py-3 px-2 text-center">165</td>
+              </tr>
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-left">Yeast</td>
+                <td className="py-3 px-2 text-center">3.13</td>
+                <td className="py-3 px-2 text-center">2.11</td>
+                <td className="py-3 px-2 text-center">0.467</td>
+                <td className="py-3 px-2 text-center">0.67</td>
+                <td className="py-3 px-2 text-center">0.0</td>
+                <td className="py-3 px-2 text-center">0.0</td>
+                <td className="py-3 px-2 text-center">0.0</td>
+                <td className="py-3 px-2 text-center">0.0</td>
+                <td className="py-3 px-2 text-center">0.0</td>
+                <td className="py-3 px-2 text-center">111.3</td>
+                <td className="py-3 px-2 text-center">18.13</td>
+                <td className="py-3 px-2 text-center">20</td>
+                <td className="py-3 px-2 text-center">19.2</td>
+                <td className="py-3 px-2 text-center">20</td>
+                <td className="py-3 px-2 text-center">19.2</td>
+              </tr>
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-left">Netscience</td>
+                <td className="py-3 px-2 text-center">9.50</td>
+                <td className="py-3 px-2 text-center">57.25</td>
+                <td className="py-3 px-2 text-center">57.25</td>
+                <td className="py-3 px-2 text-center">242.3</td>
+                <td className="py-3 px-2 text-center">242.3</td>
+                <td className="py-3 px-2 text-center">775.2</td>
+                <td className="py-3 px-2 text-center">775.2</td>
+                <td className="py-3 px-2 text-center">1938</td>
+                <td className="py-3 px-2 text-center">1938</td>
+                <td className="py-3 px-2 text-center">171</td>
+                <td className="py-3 px-2 text-center">171</td>
+                <td className="py-3 px-2 text-center">726.8</td>
+                <td className="py-3 px-2 text-center">726.8</td>
+                <td className="py-3 px-2 text-center">726.8</td>
+                <td className="py-3 px-2 text-center">726.8</td>
+              </tr>
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-left">As-733</td>
+                <td className="py-3 px-2 text-center">8.19</td>
+                <td className="py-3 px-2 text-center">31.43</td>
+                <td className="py-3 px-2 text-center">31.35</td>
+                <td className="py-3 px-2 text-center">68.67</td>
+                <td className="py-3 px-2 text-center">67.94</td>
+                <td className="py-3 px-2 text-center">92.78</td>
+                <td className="py-3 px-2 text-center">90.23</td>
+                <td className="py-3 px-2 text-center">79.37</td>
+                <td className="py-3 px-2 text-center">75.13</td>
+                <td className="py-3 px-2 text-center">826.3</td>
+                <td className="py-3 px-2 text-center">153.8</td>
+                <td className="py-3 px-2 text-center">3376</td>
+                <td className="py-3 px-2 text-center">437.7</td>
+                <td className="py-3 px-2 text-center">3376</td>
+                <td className="py-3 px-2 text-center">437.7</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default NetworkDensityVisualizer;
